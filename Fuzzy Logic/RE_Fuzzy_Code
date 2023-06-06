@@ -5,16 +5,19 @@ import skfuzzy as fuzz
 from skfuzzy import control as ctrl
 
 #Define input variables
+
 solar_irradiance = ctrl.Antecedent(np.arange(0, 100, 1), 'solar_irradiance')
 panel_temperature = ctrl.Antecedent(np.arange(0, 60, 1), 'panel_temperature')
-dc_voltage = ctrl.Antecedent(np.arange(0, 100, 1), 'dc_voltage')
+dc_voltage = ctrl.Antecedent(np.arange(0, 1000, 1), 'dc_voltage')
 humidity = ctrl.Antecedent(np.arange(0, 101, 1), 'humidity')
 
 #Define output variables
+
 alert = ctrl.Consequent(np.arange(0, 101, 1), 'alert')
 performance = ctrl.Consequent(np.arange(0, 101, 1), 'performance')
 
 #Define membership functions for input variables
+
 solar_irradiance['low'] = fuzz.trimf(solar_irradiance.universe, [0, 0, 50])
 solar_irradiance['medium'] = fuzz.trimf(solar_irradiance.universe, [20, 50, 80])
 solar_irradiance['high'] = fuzz.trimf(solar_irradiance.universe, [50, 100, 100])
@@ -22,12 +25,12 @@ solar_irradiance.view()
 
 panel_temperature['low'] = fuzz.trapmf(panel_temperature.universe, [0,0, 10, 20])
 panel_temperature['medium'] = fuzz.trimf(panel_temperature.universe, [15, 25, 35])
-panel_temperature['high'] = fuzz.trapmf(panel_temperature.universe, [25, 35, 50, 50])
+panel_temperature['high'] = fuzz.trapmf(panel_temperature.universe, [25, 35, 60, 60])
 panel_temperature.view()
 
-dc_voltage['low'] = fuzz.trimf(dc_voltage.universe, [0, 0, 25])
-dc_voltage['medium'] = fuzz.trimf(dc_voltage.universe, [20, 55, 70])
-dc_voltage['high'] = fuzz.trimf(dc_voltage.universe, [60, 100, 100])
+dc_voltage['low'] = fuzz.trapmf(dc_voltage.universe, [0, 0, 250,350])
+dc_voltage['medium'] = fuzz.trapmf(dc_voltage.universe, [200,400, 550, 700])
+dc_voltage['high'] = fuzz.trapmf(dc_voltage.universe, [600,800, 1000, 1000])
 dc_voltage.view()
 
 humidity['low'] = fuzz.trimf(humidity.universe, [0, 0, 50])
@@ -36,6 +39,7 @@ humidity['high'] = fuzz.trimf(humidity.universe, [50, 100, 100])
 humidity.view()
 
 #Define membership functions for output variables
+
 alert['green'] = fuzz.trimf(alert.universe, [0, 0, 50])
 alert['yellow'] = fuzz.trimf(alert.universe, [35, 50, 80])
 alert['red'] = fuzz.trimf(alert.universe, [65, 100, 100])
@@ -47,6 +51,7 @@ performance['excellent'] = fuzz.trimf(performance.universe, [70, 100, 100])
 performance.view()
 
 #Define fuzzy rules
+
 rule1=ctrl.Rule(solar_irradiance['low'] & panel_temperature['low'] & dc_voltage['low'] & humidity['low'], (alert['red'], performance['poor']))
 rule2=ctrl.Rule(solar_irradiance['low'] & panel_temperature['low'] & dc_voltage['low'] & humidity['medium'], (alert['yellow'], performance['poor']))
 rule3=ctrl.Rule(solar_irradiance['low'] & panel_temperature['low'] & dc_voltage['low'] & humidity['high'], (alert['yellow'], performance['balanced']))
@@ -132,10 +137,10 @@ rule81=ctrl.Rule(solar_irradiance['high'] & panel_temperature['high'] & dc_volta
 maintenance_ctrl = ctrl.ControlSystem([rule1,rule2,rule3,rule4,rule5,rule6,rule7,rule8,rule9,rule10,rule11,rule12,rule13,rule14,rule15,rule16,rule17,rule18,rule19,rule20,rule21,rule22,rule23,rule24,rule25,rule26,rule27,rule28,rule29,rule30,rule31,rule32,rule33,rule34,    rule35, rule36, rule37, rule38, rule39, rule40, rule41, rule42, rule43, rule44, rule45, rule46, rule47, rule48, rule49, rule50, rule51, rule52, rule53, rule54, rule55, rule56, rule57, rule58, rule59, rule60, rule61, rule62, rule63, rule64, rule65, rule66, rule67, rule68, rule69, rule70, rule71, rule72, rule73, rule74, rule75, rule76, rule77, rule78, rule79, rule80, rule81])
 maintenance_system = ctrl.ControlSystemSimulation(maintenance_ctrl)
 
-maintenance_system.input['solar_irradiance'] = float(input('Enter solar irradiance level (0-100): '))
-maintenance_system.input['panel_temperature'] = float(input('Enter panel temperature (0-60): '))
-maintenance_system.input['dc_voltage'] = float(input('Enter DC voltage output (0-100): '))
-maintenance_system.input['humidity'] = float(input('Enter humidity level (0-100): '))
+maintenance_system.input['solar_irradiance'] = float(input('Enter solar irradiance level (0-100 W/m2): '))
+maintenance_system.input['panel_temperature'] = float(input('Enter panel temperature (0-60 Celsius degree): '))
+maintenance_system.input['dc_voltage'] = float(input('Enter DC voltage output (0-1000 V): '))
+maintenance_system.input['humidity'] = float(input('Enter humidity level (0-100 %): '))
 
 maintenance_system.compute()
 
