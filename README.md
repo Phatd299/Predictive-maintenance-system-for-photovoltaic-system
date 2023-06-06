@@ -1,1 +1,1 @@
-# Predictive maintenance system for PV system
+# Predictive maintenance system for photovoltaic system
