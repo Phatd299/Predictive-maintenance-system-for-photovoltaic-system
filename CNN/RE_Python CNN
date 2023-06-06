@@ -1,0 +1,122 @@
+import os
+import numpy as np
+from numpy import save
+from keras.utils import to_categorical, load_img, img_to_array
+from keras.models import Sequential, Model
+from keras.layers import Dense, Conv2D, MaxPooling2D, Flatten, Activation, Dropout, LeakyReLU
+from keras.optimizers import SGD
+import matplotlib.pyplot as plt
+from sklearn.model_selection import train_test_split
+#load folder datasets
+folder = "/content/drive/MyDrive/Renewable energy/RE_CNN_Image"
+#tiền xử lý dữ liệu
+photos,labels = list(), list()
+for file in os.listdir(folder):
+  output = 0
+  if file.startswith('good'):
+    output = 0
+  elif file.startswith('defect'):
+    output = 1
+  if output is not None:
+    img = load_img(os.path.join(folder,file), target_size=(200,200,3))
+    img = img_to_array(img)
+    photos.append(img)
+    labels.append(output)
+#Xác định kiểu cho mảng
+photos = np.array(photos)
+labels = np.array(labels)
+
+x_train, x_test, y_train, y_test = train_test_split(photos,labels,test_size=0.3, random_state=42)
+x1=x_train
+x2=x_test
+y1=y_train
+y2=y_test
+
+x_train=x_train.reshape(77,200,200,3)
+x_train = x_train.astype('float32') / 255
+
+x_test=x_test.reshape(33,200,200,3)
+x_test = x_test.astype('float32') / 255
+
+from keras.utils import to_categorical
+y_train = to_categorical(y_train,2) 
+y_test = to_categorical(y_test,2) 
+
+from keras.models import Sequential
+from keras.layers import Conv2D, MaxPooling2D, Dense, Flatten 
+
+model = Sequential()
+model.add(Conv2D(32, kernel_size=(3,3), activation='linear', input_shape=(200,200,3), padding='same'))
+model.add(MaxPooling2D((2,2),padding='same'))
+model.add(Conv2D(64, kernel_size=(3,3), activation='linear', padding='same'))
+model.add(MaxPooling2D((2,2),padding='same'))
+model.add(Conv2D(128, kernel_size=(3,3), activation='linear', padding='same'))
+model.add(MaxPooling2D((2,2),padding='same'))
+
+
+model.add(Flatten())
+
+
+model.add(Dense(128, activation='relu'))
+model.add(Dense(2, activation='softmax'))
+
+model.summary()
+
+from keras.losses import categorical_crossentropy
+model.compile(loss=categorical_crossentropy, optimizer='adam', metrics=['accuracy'])
+
+system = model.fit(x_train , y_train,validation_split=0.2, epochs=50, batch_size=128, verbose=1)
+
+plt.figure(1)
+plt.plot(system.history['loss'])
+plt.plot(system.history['val_loss'])
+plt.legend(['training','testing'])
+plt.title('Loss Figure')
+plt.xlabel('epoch')
+plt.ylabel('Loss')
+plt.figure(2)
+plt.plot(system.history['accuracy'])
+plt.plot(system.history['val_accuracy'])
+plt.legend(['training','testing'])
+plt.title('Acurracy Figure')
+plt.xlabel('epoch')
+plt.ylabel('Accuracy')
+
+plt.show()
+score =model.evaluate(x_test,y_test,verbose=0)
+print('Test Score:',score[0])
+print('Test Accuracy:',score[1])
+
+#TEST WITH TESTING DATA
+
+model_loss, model_acc = model.evaluate(x_test, y_test)
+print('Loss rate: ', model_loss)
+print('Testing accuracy rate: ', model_acc)
+
+for i in range(0,10):
+  img1=x2[i]
+  plt.subplot(2,5,i+1) 
+  plt.imshow(x_test[i])
+  img1=np.array(img1)
+  img1 = img1.reshape(1, 200, 200, 3)
+  img1=img1/255
+  print('Expectation', np.argmax(model.predict(img1),axis=-1))
+  print('Answer', y2[i])
+plt.show
+
+#PREDICT
+
+import numpy as np
+from keras.utils import load_img, img_to_array
+#Tải ảnh
+filename = "/content/drive/MyDrive/Renewable energy/test 2.jpg"
+img = load_img(filename,target_size=(200,200))
+plt.imshow(img)
+#chuyển ảnh thành mảng
+img = img_to_array(img)
+#Định dạng thành mẫu dữ liệu với 3 kênh
+img = img.reshape(1,200,200,3)
+# Chuẩn bị dữ liệu dạng pixel
+img = img.astype('float32')
+img = img/255.0
+np.argmax(model.predict(img),axis=1)
