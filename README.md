@@ -1,5 +1,7 @@
 # Predictive maintenance system for photovoltaic system
 
+<iframe src="https://onedrive.live.com/embed?resid=8d775148de787d87%211424&authkey=!AJFlhwnj7LJytiU&em=2" width="476" height="288" frameborder="0" scrolling="no"></iframe>
+
 This study presents a predictive maintenance system for photovoltaic (PV) installations. It attempts to improve PV system efficiency and maintenance operations by utilizing AI algorithm such as fuzzy logic and a Convolutional Neural Network (CNN) model.
 
 ![abc2](https://github.com/Phatd299/Renewable-Energy/assets/110618138/ae68760c-0e69-4a32-afc2-3842fdb75a4c)
