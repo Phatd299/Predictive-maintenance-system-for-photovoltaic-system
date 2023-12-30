@@ -27,6 +27,12 @@ Libraries specified in requirements.txt
     ```bash
     pip install -r requirements.txt
     ```
+
+3. Run streamlit web app
+    ```bash
+    streamlit run app.py
+    ```
+    
 ## Usage
 
 1. Ensure the model (`model.h5`) is available in the project directory.
